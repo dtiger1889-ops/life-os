@@ -1,0 +1,5 @@
+<resources>
+    <!-- Compose draws all UI; the activity just needs a no-action-bar host theme.
+         Platform Material theme avoids pulling the Material Components XML library. -->
+    <style name="Theme.LifeOS" parent="@android:style/Theme.Material.Light.NoActionBar" />
+</resources>

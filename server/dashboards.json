@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "dashboards": [
+    { "id": "casework",  "label": "Casework",  "subtitle": "the game is afoot",
+      "owner": "consulting-detective", "group": "home", "order": 10, "kind": "editable",
+      "url": "http://YOUR-PC-HOSTNAME:8765/casework/dashboard.html", "color": "0xFF8FB96A" }
+  ]
+}

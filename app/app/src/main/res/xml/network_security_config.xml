@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+  <!-- The server URL is entered by the user at runtime (see data/ServerConfig.kt) and is
+       typically a hostname or LAN/tailnet IP reachable only over plain HTTP, so there is no
+       fixed domain to allowlist ahead of time; cleartext is permitted for all domains instead.
+       10.0.2.2 (the AVD emulator's host loopback alias) works the same way, no special case
+       needed here. -->
+  <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

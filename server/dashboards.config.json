@@ -1,0 +1,5 @@
+{
+  "dashboards": [
+    { "name": "casework", "dir": "../example/casework", "engine": "casework.py" }
+  ]
+}

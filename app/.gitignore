@@ -1,0 +1,14 @@
+.gradle/
+build/
+.idea/
+*.iml
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+hs_err_pid*.log
+replay_pid*.log
+
+# Verification scratch (device screenshots) - keep local, do not version
+verify/

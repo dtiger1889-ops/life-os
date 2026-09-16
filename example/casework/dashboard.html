@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="900">
+<title>Casework</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --ink: #c9d1d9; --muted: #6e7681;
+    --line: #232a33; --red: #ff7b72; --amber: #e4b65c; --green: #8fb96a; --accent: #9db8d2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    line-height: 1.5; padding: 32px 20px 64px; max-width: 780px; margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { margin-bottom: 28px; }
+  .kicker { font-family: ui-monospace, "SF Mono", Menlo, monospace; text-transform: uppercase;
+    letter-spacing: 0.22em; font-size: 11px; color: var(--muted); }
+  h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.01em; margin-top: 4px; font-style: italic; }
+  .stamp { color: var(--muted); font-size: 13px; margin-top: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px; margin-bottom: 18px; }
+  h2 { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  ul { list-style: none; }
+  .action-error { background: rgba(255,123,114,0.12); border: 1px solid rgba(255,123,114,0.35);
+    color: var(--red); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
+  .action-error[hidden] { display: none; }
+  .case-card { padding: 12px 0; border-top: 1px solid var(--line); }
+  .case-card:first-child { border-top: none; }
+  .case-notes { color: var(--muted); font-size: 13px; margin-top: 6px;
+    font-family: ui-monospace, monospace; }
+  .task { display: grid; grid-template-columns: 22px 1fr; gap: 4px 12px; padding: 12px 0;
+    border-top: 1px solid var(--line); }
+  .task:first-child { border-top: none; }
+  .task-check { align-self: start; margin-top: 4px; width: 16px; height: 16px; }
+  .task-text { font-size: 17px; }
+  .meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; padding: 4px 0; }
+  .row-name { font-size: 17px; flex: 0 0 auto; }
+  .row-sub { color: var(--muted); font-size: 13px; flex: 0 0 auto;
+    font-family: ui-monospace, monospace; }
+  .row-actions { display: inline-flex; gap: 6px; margin-left: auto; }
+  .mini-btn { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px;
+    letter-spacing: 0.03em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line);
+    background: transparent; color: var(--accent); cursor: pointer; }
+  .mini-btn:hover { border-color: var(--accent); }
+  .quickadd { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid var(--line); }
+  .quickadd input[type="text"] { flex: 1 1 200px; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 14px; }
+  .quickadd select, .quickadd button { background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-family: inherit;
+    font-size: 14px; cursor: pointer; }
+  .form-error { color: var(--red); font-size: 12px; flex-basis: 100%; }
+  .chip { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: 0.04em;
+    padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+  .red   { background: rgba(255,123,114,0.16); color: var(--red);   border: 1px solid rgba(255,123,114,0.35); }
+  .amber { background: rgba(228,182,92,0.14);  color: var(--amber); border: 1px solid rgba(228,182,92,0.32); }
+  .green { background: rgba(143,185,106,0.14); color: var(--green); border: 1px solid rgba(143,185,106,0.30); }
+  .ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+  .empty { color: var(--muted); font-style: italic; padding: 6px 0; }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 28px;
+    font-family: ui-monospace, monospace; }
+  @media (max-width: 560px) {
+    body { padding: 22px 14px 48px; }
+    h1 { font-size: 25px; }
+    section { padding: 16px 16px; }
+    .row { flex-direction: column; align-items: flex-start; }
+    .row-actions { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="kicker">Casework</div>
+    <h1>The game is afoot.</h1>
+    <div class="stamp">updated Friday 10 July, 04:08 PM</div>
+  </header>
+
+  <div id="casework-error" class="action-error" hidden></div>
+
+  <section>
+    <h2>Open cases</h2>
+    <ul>
+      <li class="case-card"><div class="row"><span class="row-name">#3 The Silent Group Chat</span><span class="row-sub">private client (name withheld)</span><span class="row-sub">opened Jul 8</span><span class="chip red">stakeout</span><span class="chip amber">medium</span><span class="row-actions"><button type="button" class="mini-btn" data-id="3" onclick="caseworkSolveCase(this)">Solve</button></span></div><div class="case-notes">Five old friends, one group chat, radio silence since Tuesday night -- the same night one of them stopped answering his phone.</div></li>
+<li class="case-card"><div class="row"><span class="row-name">#1 The Vanishing Courier of Camden Lock</span><span class="row-sub">Scotland Yard</span><span class="row-sub">opened Jul 4</span><span class="chip amber">investigating</span><span class="chip red">high</span><span class="row-actions"><button type="button" class="mini-btn" data-id="1" onclick="caseworkSolveCase(this)">Solve</button></span></div><div class="case-notes">Motorcycle courier failed to complete his round; last signal was an e-bike charging-dock ping near the canal towpath.</div></li>
+<li class="case-card"><div class="row"><span class="row-name">#2 The Locked Flat on Marylebone Road</span><span class="row-sub">Scotland Yard</span><span class="row-sub">opened Jun 29</span><span class="chip ghost">awaiting_lab</span><span class="chip amber">medium</span><span class="row-actions"><button type="button" class="mini-btn" data-id="2" onclick="caseworkSolveCase(this)">Solve</button></span></div><div class="case-notes">No forced entry, no sign of struggle. A contactless payment was made from the tenant's card two hours after neighbours last saw him.</div></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Leads</h2>
+    <ul>
+      <li class="task"><input type="checkbox" class="task-check" onchange="caseworkDoneLead(1, this)"><span class="task-text">Pull the 221B doorbell-cam footage from the night of the disappearance</span><span class="meta"><span class="row-sub">The Vanishing Courier of Camden Lock</span><span class="chip red">high</span></span></li>
+<li class="task"><input type="checkbox" class="task-check" onchange="caseworkDoneLead(2, this)"><span class="task-text">Ask Wiggins to trace the courier's e-bike serial number</span><span class="meta"><span class="row-sub">The Vanishing Courier of Camden Lock</span><span class="chip red">high</span></span></li>
+<li class="task"><input type="checkbox" class="task-check" onchange="caseworkDoneLead(3, this)"><span class="task-text">Cross-reference contactless payment terminals near Marylebone Road</span><span class="meta"><span class="row-sub">The Locked Flat on Marylebone Road</span><span class="chip amber">medium</span></span></li>
+<li class="task"><input type="checkbox" class="task-check" onchange="caseworkDoneLead(5, this)"><span class="task-text">Request the group chat's server-side timestamps (metadata only, not content)</span><span class="meta"><span class="row-sub">The Silent Group Chat</span><span class="chip amber">medium</span></span></li>
+<li class="task"><input type="checkbox" class="task-check" onchange="caseworkDoneLead(4, this)"><span class="task-text">Get Mrs. Hudson's account of who came and went that week</span><span class="meta"><span class="row-sub">The Locked Flat on Marylebone Road</span><span class="chip ghost">low</span></span></li>
+    </ul>
+    <form class="quickadd" onsubmit="return caseworkAddLead(event)">
+      <input type="text" name="text" placeholder="New lead..." required>
+      <select name="urgency">
+        <option value="low">low</option>
+        <option value="medium" selected>medium</option>
+        <option value="high">high</option>
+      </select>
+      <button type="submit">Add</button>
+      <span class="form-error" id="lead-add-error"></span>
+    </form>
+  </section>
+
+  <section>
+    <h2>Contacts</h2>
+    <ul>
+      <li class="row"><span class="row-name">DI Lestrade</span><span class="row-sub">Scotland Yard</span><span class="row-sub">last contact Jul 8</span><span class="row-actions"><button type="button" class="mini-btn" data-name="DI Lestrade" onclick="caseworkLogContact(this)">Log contact</button></span></li>
+<li class="row"><span class="row-name">Dr. Watson</span><span class="row-sub">flatmate &amp; chronicler</span><span class="row-sub">last contact Jul 9</span><span class="row-actions"><button type="button" class="mini-btn" data-name="Dr. Watson" onclick="caseworkLogContact(this)">Log contact</button></span></li>
+<li class="row"><span class="row-name">Mrs. Hudson</span><span class="row-sub">landlady</span><span class="row-sub">last contact Jul 10</span><span class="row-actions"><button type="button" class="mini-btn" data-name="Mrs. Hudson" onclick="caseworkLogContact(this)">Log contact</button></span></li>
+<li class="row"><span class="row-name">Mycroft Holmes</span><span class="row-sub">Whitehall</span><span class="row-sub">last contact Jul 5</span><span class="row-actions"><button type="button" class="mini-btn" data-name="Mycroft Holmes" onclick="caseworkLogContact(this)">Log contact</button></span></li>
+    </ul>
+  </section>
+
+  <footer>auto-refreshes every 15 min while open</footer>
+
+  <script>
+  // Every control POSTs to the sync server's /api/casework/desktop/<action>
+  // endpoint (the same engine functions the CLI uses, stamped
+  // updated_by='desktop'); the engine rebuilds this HTML on every write, so
+  // a successful POST just reloads the page. A failed POST shows an inline
+  // error and does NOT reload.
+  async function caseworkPost(action, data) {
+    try {
+      const res = await fetch('/api/casework/desktop/' + action, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        let msg = 'request failed (' + res.status + ')';
+        try { const j = await res.json(); if (j.error) msg = j.error; } catch (e) {}
+        return {ok: false, error: msg};
+      }
+      return {ok: true};
+    } catch (e) {
+      return {ok: false, error: 'network error: ' + e};
+    }
+  }
+
+  function caseworkShowError(msg) {
+    const el = document.getElementById('casework-error');
+    el.textContent = msg;
+    el.hidden = false;
+  }
+
+  async function caseworkDoneLead(id, checkbox) {
+    checkbox.disabled = true;
+    const r = await caseworkPost('done-lead', {id: id});
+    if (r.ok) { location.reload(); }
+    else { checkbox.checked = false; checkbox.disabled = false; caseworkShowError(r.error); }
+  }
+
+  async function caseworkAddLead(ev) {
+    ev.preventDefault();
+    const form = ev.target;
+    const errEl = document.getElementById('lead-add-error');
+    errEl.textContent = '';
+    const r = await caseworkPost('add-lead', {text: form.text.value, urgency: form.urgency.value});
+    if (r.ok) { location.reload(); }
+    else { errEl.textContent = r.error; }
+    return false;
+  }
+
+  async function caseworkSolveCase(btn) {
+    btn.disabled = true;
+    const r = await caseworkPost('solve-case', {id: btn.dataset.id});
+    if (r.ok) { location.reload(); }
+    else { btn.disabled = false; caseworkShowError(r.error); }
+  }
+
+  async function caseworkLogContact(btn) {
+    const note = window.prompt('Note (optional):', '') || '';
+    btn.disabled = true;
+    const r = await caseworkPost('log-contact', {name: btn.dataset.name, note: note});
+    if (r.ok) { location.reload(); }
+    else { btn.disabled = false; caseworkShowError(r.error); }
+  }
+  </script>
+</body>
+</html>

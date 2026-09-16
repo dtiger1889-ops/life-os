@@ -1,0 +1,11 @@
+# Regenerable / machine-local — not part of the kit
+__pycache__/
+*.pyc
+example/casework/casework.db
+
+# Android build outputs (the app/ template ships source only)
+app/**/build/
+app/.gradle/
+app/local.properties
+app/.idea/
+app/captures/

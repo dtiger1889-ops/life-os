@@ -75,6 +75,10 @@ for the domain. When you do:
   checkbox, currency, read-only). Add screenshot-test previews for every new row/widget
   state, record goldens, and actually look at the rendered PNGs — a green diff only proves
   stability, not correctness.
+- If the domain has a moment where a person just finished something and two linked records
+  come out of it (an event and a payment that belongs to it), build that capture as the
+  walk-out pattern in `design/walk-out-capture.md`: one gesture, instant local confirmation,
+  and a held outbox row for the linked record until its parent has a server id.
 
 ## 7. Verify before you call it done
 - Sync acceptance per table: push create lands with `updated_by='phone'` and regenerates

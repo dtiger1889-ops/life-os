@@ -78,6 +78,11 @@ declared by each engine's `DESKTOP_ACTIONS` export.
   edit, periodic.
 - Offline is a non-event: edits queue; the queue drains whenever the server is next
   reachable.
+- A create that points at another row the phone created but has not synced yet cannot be
+  pushed: the push ack does not return new ids, so the phone only learns the parent's real
+  id from a pull. Hold the dependent outbox row, release it once the pull reconciles the
+  parent, and push again in the same sync run. `design/walk-out-capture.md` describes the
+  hold; the app template does not ship it yet.
 
 ## Adding a dashboard
 

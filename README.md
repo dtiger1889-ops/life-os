@@ -1,5 +1,7 @@
 # Life OS
 
+![Life OS casework dashboard with fictional cases and leads](assets/example-dashboard.png)
+
 A tiny personal-dashboard framework: **one data layer on your own PC, three ways to touch
 it** — an offline-first Android app, browser dashboards with inline edit controls, and your
 AI coding assistant. No cloud, no accounts, no subscriptions; Python standard library on

@@ -133,6 +133,27 @@
   // updated_by='desktop'); the engine rebuilds this HTML on every write, so
   // a successful POST just reloads the page. A failed POST shows an inline
   // error and does NOT reload.
+
+  // An Android WebView drops the scroll position on reload, so a save reload
+  // carries it in its own address (?lifeos_y=). The restore step removes it
+  // at once, so a later manual reload or a shared link starts at the top.
+  function lifeosReload() {
+    const u = new URL(location.href);
+    u.searchParams.set('lifeos_y', String(Math.round(window.scrollY)));
+    location.replace(u.toString());
+  }
+  (function lifeosRestoreScroll() {
+    const u = new URL(location.href);
+    const y = u.searchParams.get('lifeos_y');
+    if (y === null) return;
+    u.searchParams.delete('lifeos_y');
+    history.replaceState(null, '', u.toString());
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    const go = function () { window.scrollTo(0, parseInt(y, 10) || 0); };
+    go();
+    window.addEventListener('load', go);
+  })();
+
   async function caseworkPost(action, data) {
     try {
       const res = await fetch('/api/casework/desktop/' + action, {
@@ -160,7 +181,7 @@
   async function caseworkDoneLead(id, checkbox) {
     checkbox.disabled = true;
     const r = await caseworkPost('done-lead', {id: id});
-    if (r.ok) { location.reload(); }
+    if (r.ok) { lifeosReload(); }
     else { checkbox.checked = false; checkbox.disabled = false; caseworkShowError(r.error); }
   }
 
@@ -170,7 +191,7 @@
     const errEl = document.getElementById('lead-add-error');
     errEl.textContent = '';
     const r = await caseworkPost('add-lead', {text: form.text.value, urgency: form.urgency.value});
-    if (r.ok) { location.reload(); }
+    if (r.ok) { lifeosReload(); }
     else { errEl.textContent = r.error; }
     return false;
   }
@@ -178,7 +199,7 @@
   async function caseworkSolveCase(btn) {
     btn.disabled = true;
     const r = await caseworkPost('solve-case', {id: btn.dataset.id});
-    if (r.ok) { location.reload(); }
+    if (r.ok) { lifeosReload(); }
     else { btn.disabled = false; caseworkShowError(r.error); }
   }
 
@@ -186,7 +207,7 @@
     const note = window.prompt('Note (optional):', '') || '';
     btn.disabled = true;
     const r = await caseworkPost('log-contact', {name: btn.dataset.name, note: note});
-    if (r.ok) { location.reload(); }
+    if (r.ok) { lifeosReload(); }
     else { btn.disabled = false; caseworkShowError(r.error); }
   }
   </script>

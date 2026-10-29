@@ -7,11 +7,11 @@ it** — an offline-first Android app, browser dashboards with inline edit contr
 AI coding assistant. No cloud, no accounts, no subscriptions; Python standard library on
 the desktop, Kotlin/Compose on the phone, SQLite files you own.
 
-The design premise: you should not build dashboards by hand in a no-code tool. You describe
-a life domain to a coding agent (Claude, or any capable assistant), point it at
-`PLAYBOOK.md`, and it writes a purpose-fit dashboard — schema, sync, HTML, and optionally
-native phone screens — in an afternoon. The framework supplies the proven plumbing so the
-agent only writes the domain.
+The design premise: you should not build dashboards by hand in a no-code tool. You tell a
+coding agent (Claude, or any capable assistant) what part of your life you want to manage,
+point it at `PLAYBOOK.md`, and it builds your own dashboard for it: the schema, the sync,
+the HTML, and native phone screens if you want them. The framework supplies the proven
+plumbing so the agent only writes the domain.
 
 The reference dashboard, **casework**, tracks a day in the life of a modern consulting
 detective — open cases, leads, and contacts for a certain resident of 221B Baker Street.
